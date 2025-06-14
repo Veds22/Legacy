@@ -1,42 +1,111 @@
 <%- include('partials/header') %>
+  <style>
+    body {
+      background-color: #f3f3f3;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-<div class="container mt-5">
-  <h1>Login</h1>
+    .login-container {
+      max-width: 900px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-wrap: wrap;
+    }
 
-  <div class="row">
-    <div class="col-sm-8">
-      <div class="card">
-        <div class="card-body">
+    .form-section {
+      padding: 60px 40px;
+      flex: 1;
+      min-width: 300px;
+    }
 
-          <!-- Makes POST request to /login route -->
-          <form action="/login" method="POST">
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" class="form-control" name="username">
-            </div>
-            <div class="form-group">
-              <label for="password">Password</label>
-              <input type="password" class="form-control" name="password">
-            </div>
-            <button type="submit" class="btn btn-dark">Login</button>
-          </form>
+    .form-section h2 {
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
 
-        </div>
+    .form-section p {
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    .form-check-label {
+      font-size: 0.9rem;
+    }
+
+    .illustration-section {
+      background: linear-gradient(to right, #7f5af0, #a78bfa);
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 300px;
+    }
+
+    .illustration-section img {
+      max-width: 90%;
+      height: auto;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      padding: 10px 15px;
+    }
+
+    .btn-primary {
+      background-color: #7f5af0;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 25px;
+      font-weight: 600;
+    }
+
+    .btn-primary:hover {
+      background-color: #683cd2;
+    }
+
+    .signup-link {
+      font-size: 0.9rem;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+<div class="login-container">
+  <div class="form-section">
+    <h2>Holla, Welcome Back</h2>
+    <p>Hey, welcome back to your special place</p>
+    <form method="POST" action="/login">
+      <div class="mb-3">
+        <input type="email" class="form-control" name="username" placeholder="Email Address" />
       </div>
-    </div>
-
-    <!-- <div class="col-sm-4">
-      <div class="card">
-        <div class="card-body">
-          <a class="btn btn-block" href="/auth/google" role="button">
-            <i class="fab fa-google"></i>
-            Sign In with Google
-          </a>
-        </div>
+      <div class="mb-3">
+        <input type="password" class="form-control" name="password" placeholder="Password" />
       </div>
-    </div> -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" checked />
+          <label class="form-check-label">Remember me</label>
+        </div>
+        <a href="#" style="font-size: 0.9rem;">Forgot Password?</a>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Sign In</button>
+    </form>
+    <p class="signup-link text-center mt-3">
+      Don't have an account? <a href="#">Sign Up</a>
+    </p>
+  </div>
+  
 
+  <div class="illustration-section">
+    <img src="/static/images/login.png" alt="Login Illustration" />
   </div>
 </div>
+
+</body>
+</html>
 
 <%- include('partials/footer') %>

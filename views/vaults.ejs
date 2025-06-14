@@ -1,0 +1,279 @@
+<%- include('partials/header') %>
+
+<div class="container-fluid px-4">
+  <div class="content-wrapper bg-white rounded-4 shadow-sm p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="h3 mb-0">Your Vaults</h1>
+      <a href="/vaults/create" class="btn btn-add">
+        <i class="fas fa-plus"></i> Create New Vault
+      </a>
+    </div>
+
+    <div class="row g-4">
+      <% vaults.forEach(function(vault) { %>
+        <div class="col-md-6">
+          <div class="card custom-card h-100">
+            <div class="row g-4 h-100">
+              <div class="col-12 col-md-4">
+                <img src="<%= vault.imageUrl %>" alt="<%= vault.name %>" class="image-box img-fluid">
+              </div>
+              <div class="col-12 col-md-8 d-flex flex-column h-100">
+                <div class="flex-grow-1 m-2">
+                  <h5 class="card-title fade-in"><%= vault.name %></h5>
+                  <p class="card-subtitle"><%= vault.description %></p>
+                </div>
+                <div class="btn-group-responsive mt-auto">
+                  <a href="/vaults/<%= vault._id %>" class="btn btn-soft action-btn">
+                    <i class="fas fa-eye"></i> View
+                  </a>
+                  <a href="/vaults/<%= vault._id %>/edit" class="btn btn-soft action-btn">
+                    <i class="fas fa-edit"></i> Edit
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</div>
+
+<style>
+  .content-wrapper {
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    max-width: 80%;
+    margin: 0 auto;
+  }
+
+  .content-wrapper h1 {
+    color: #333;
+    font-weight: 600;
+  }
+
+  .btn-add {
+    background-color: #7f5af0;
+    color: white;
+    border: none;
+    padding: 0.5rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(127, 90, 240, 0.2);
+  }
+
+  .btn-add:hover {
+    background-color: #6a4acf;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(127, 90, 240, 0.3);
+  }
+
+  .btn-add:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(127, 90, 240, 0.2);
+  }
+
+  .btn-add i {
+    margin-right: 0.4rem;
+    font-size: 0.9rem;
+    transition: transform 0.3s ease;
+  }
+
+  .btn-add:hover i {
+    transform: rotate(90deg);
+  }
+
+  .custom-card {
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(150, 144, 162, 0.2);
+    padding: 1rem;
+    background-color: #ffffff;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .custom-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .image-box {
+    border-radius: 12px;
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+
+  .fade-in {
+    animation: fadeIn 1s ease-in forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+    text-align: left;
+  }
+
+  .card-subtitle {
+    font-size: 1rem;
+    color: #555;
+    font-weight: 400;
+    line-height: 1.4;
+    text-align: left;
+  }
+
+  .col-12.col-md-8.d-flex.flex-column.h-100 {
+    justify-content: center;
+    padding: 1rem 0;
+  }
+
+  .flex-grow-1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 150px;
+  }
+
+  .btn-soft {
+    background-color: #f4f0fb;
+    color: #6c4dc5;
+    border: none;
+    padding: 0.5rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    min-width: 100px;
+  }
+
+  .btn-soft:hover {
+    background-color: #e2d9fb;
+    color: #563ecf;
+    transform: translateY(-2px);
+  }
+
+  .btn-soft:active {
+    background-color: #d6ccf8;
+    transform: scale(0.98);
+  }
+
+  .action-btn i {
+    margin-right: 0.75rem;
+    font-size: 1.2rem;
+  }
+
+  .btn-group-responsive {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    justify-content: center;
+    width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    .btn-group-responsive {
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .content-wrapper {
+      padding: 1rem;
+    }
+
+    .custom-card {
+      padding: 0.75rem;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+    }
+
+    .card-subtitle {
+      font-size: 0.9rem;
+    }
+
+    .flex-grow-1 {
+      min-height: 120px;
+    }
+
+    .btn-soft {
+      padding: 0.4rem 1rem;
+      font-size: 0.85rem;
+      min-width: 90px;
+    }
+
+    .image-box {
+      height: 150px;
+    }
+
+    .btn-add {
+      padding: 0.4rem 1rem;
+      font-size: 0.85rem;
+    }
+    
+    .btn-add i {
+      margin-right: 0.3rem;
+      font-size: 0.85rem;
+    }
+  }
+
+  .display-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    color: #333;
+  }
+
+  .display-subtitle {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+  }
+
+  .display-meta {
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: 0.25rem;
+  }
+
+  @media (max-width: 768px) {
+    .content-wrapper {
+      padding: 1.5rem;
+    }
+
+    .display-image {
+      height: 180px;
+    }
+
+    .display-body {
+      padding: 1rem;
+    }
+
+    .display-title {
+      font-size: 0.9rem;
+    }
+
+    .display-subtitle {
+      font-size: 0.8rem;
+    }
+
+    .display-meta {
+      font-size: 0.7rem;
+    }
+  }
+</style>
