@@ -11,7 +11,7 @@ const db =new pg.Client({
   password: "yash",
   port: 5432,
 });
-//db.connect();
+db.connect();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use('/static', express.static('public/static'));
@@ -28,92 +28,161 @@ app.get("/login", (req, res) => {
 app.get("/register", (req, res) => {
   res.render("register.ejs");
 });
+// Schema for Vaults and image table 
+// each user will have multiple vaults and each vault will have multiple images 
+// user 1--n vaults 1--n images 
+// CREATE TABLE vaults (
+//   id SERIAL PRIMARY KEY,
+//   user_id INTEGER NOT NULL,
+//   name VARCHAR(100) NOT NULL,
+//   description TEXT,
+//   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+// );
 
-app.get("/vaults", (req, res) => {
+// CREATE TABLE images (
+//   id SERIAL PRIMARY KEY,
+//   vault_id INTEGER NOT NULL,
+//   image_url TEXT NOT NULL,
+//   description TEXT,
+//   uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//   FOREIGN KEY (vault_id) REFERENCES vaults(id) ON DELETE CASCADE
+// );
+
+
+
 
   // TESTED WITH DUMMY DATA
   // Retreive vaults of a user and displays it
   // Add logic to retrieve data from db and parse it to vaults.ejs
+ app.get("/vaults", async (req, res) => {
+  try {
+    const userId = 1 ;
 
-  res.render('vaults.ejs', { vaults: [{
-    _id: '1',
-    name: 'yash',
-    description: "Topper",
-    imageUrl: "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg"
-  },
-  {
-    _id: '2',
-    name: 'yash',
-    description: "Rajaji",
-    imageUrl: "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg"
-  },
-  {
-    _id: '3',
-    name: "yash",
-    description: "Interdimensional Conqueror",
-    imageUrl: "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg"
-  },
-  {
-    _id: '4',
-    name: 'yash',
-    description: "Team Leader",
-    imageUrl: "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg"
-  }]
- });
+    const result = await db.query(
+      `
+      SELECT 
+        id AS _id, 
+        name, 
+        description, 
+        image_url AS "imageUrl" 
+      FROM vaults
+      WHERE user_id = $1
+      `,
+      [userId]
+    );
+    console.log(result.rows);
+
+    res.render("vaults.ejs", { vaults: result.rows });
+  } catch (err) {
+    console.error("Error fetching vaults:", err.message);
+    res.status(500).send("Error fetching vaults from database.");
+  }
 });
 
-app.get('/vaults/:id', (req, res) => {
+//   res.render('vaults.ejs', { vaults: [{
+//     _id: '1',
+//     name: 'yash',
+//     description: "Topper",
+//     imageUrl: "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg"
+//   },
+//   {
+//     _id: '2',
+//     name: 'yash',
+//     description: "Rajaji",
+//     imageUrl: "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg"
+//   },
+//   {
+//     _id: '3',
+//     name: "yash",
+//     description: "Interdimensional Conqueror",
+//     imageUrl: "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg"
+//   },
+//   {
+//     _id: '4',
+//     name: 'yash',
+//     description: "Team Leader",
+//     imageUrl: "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg"
+//   }]
+//  });
+
+
+
+
 
   // TESTED with Dummy Data
   // add logic to retreive data from db for images and parse it to vault.ejs
+  app.get('/vaults/:id', async (req, res) => {
+  const vaultId = req.params.id;
 
-  const cards = [
-    {
-      imageUrl: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg',
-      title: 'Sunset View',
-      subtitle: 'Beautiful sunset by the beach.',
-      addedBy: 'Alice Smith',
-      addedOn: 'June 1, 2025'
-    },
-    {
-      imageUrl: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg',
-      title: 'Mountain Peaks',
-      subtitle: 'Snowy mountains during sunrise.',
-      addedBy: 'Bob Stone',
-      addedOn: 'June 3, 2025'
-    },
-    {
-      imageUrl: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg',
-      title: 'City Lights',
-      subtitle: 'Night skyline glowing.',
-      addedBy: 'Carla West',
-      addedOn: 'June 5, 2025'
-    },
-    {
-      imageUrl: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg',
-      title: 'Forest Trail',
-      subtitle: 'A walk through the woods.',
-      addedBy: 'David King',
-      addedOn: 'June 7, 2025'
-    },
-    {
-      imageUrl: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg',
-      title: 'Ocean Horizon',
-      subtitle: 'Endless waves and breeze.',
-      addedBy: 'Ella Rae',
-      addedOn: 'June 9, 2025'
-    },
-    {
-      imageUrl: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg',
-      title: 'Golden Fields',
-      subtitle: 'Sunshine over farmland.',
-      addedBy: 'Frank Lane',
-      addedOn: 'June 11, 2025'
-    }
-  ]
+  try {
+    const result = await db.query(`
+  SELECT 
+    images.image_url AS "imageUrl",
+    images.description AS subtitle,
+    users.email AS "addedBy",
+    TO_CHAR(images.uploaded_at, 'Month DD, YYYY') AS "addedOn"
+  FROM images
+  JOIN vaults ON images.vault_id = vaults.id
+  JOIN users ON vaults.user_id = users.id
+  WHERE images.vault_id = $1
+  ORDER BY images.uploaded_at DESC
+`, [vaultId]);
 
-  res.render('vault.ejs', { cards })
+    res.render('vault.ejs', { cards: result.rows });
+  } catch (err) {
+    console.error('Error fetching images for vault:', err.message);
+    res.status(500).send('Error loading vault images');
+  }
 });
+
+  // const cards = [
+  //   {
+  //     imageUrl: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg',
+  //     title: 'Sunset View',
+  //     subtitle: 'Beautiful sunset by the beach.',
+  //     addedBy: 'Alice Smith',
+  //     addedOn: 'June 1, 2025'
+  //   },
+  //   {
+  //     imageUrl: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg',
+  //     title: 'Mountain Peaks',
+  //     subtitle: 'Snowy mountains during sunrise.',
+  //     addedBy: 'Bob Stone',
+  //     addedOn: 'June 3, 2025'
+  //   },
+  //   {
+  //     imageUrl: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg',
+  //     title: 'City Lights',
+  //     subtitle: 'Night skyline glowing.',
+  //     addedBy: 'Carla West',
+  //     addedOn: 'June 5, 2025'
+  //   },
+  //   {
+  //     imageUrl: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg',
+  //     title: 'Forest Trail',
+  //     subtitle: 'A walk through the woods.',
+  //     addedBy: 'David King',
+  //     addedOn: 'June 7, 2025'
+  //   },
+  //   {
+  //     imageUrl: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg',
+  //     title: 'Ocean Horizon',
+  //     subtitle: 'Endless waves and breeze.',
+  //     addedBy: 'Ella Rae',
+  //     addedOn: 'June 9, 2025'
+  //   },
+  //   {
+  //     imageUrl: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg',
+  //     title: 'Golden Fields',
+  //     subtitle: 'Sunshine over farmland.',
+  //     addedBy: 'Frank Lane',
+  //     addedOn: 'June 11, 2025'
+  //   }
+  // ]
+
+  // res.render('vault.ejs', { cards })
+
 
 app.post("/register", async (req, res) => {
   const email = req.body.username;
