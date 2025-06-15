@@ -1,21 +1,23 @@
 <%- include('partials/header') %>
 
+
+
 <div class="container-fluid px-4">
   <div class="content-wrapper bg-white rounded-4 shadow-sm p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h1 class="h3 mb-0">Vault Titles</h1>
-      <a href="/vaults/create" class="btn btn-add">
-        <i class="fas fa-plus"></i> Add New Vault
+      <a href="/vaults/<%= vaultId %>/upload" class="btn btn-add">
+        <i class="fas fa-upload"></i> Upload
       </a>
     </div>
     <div class="container py-4">
-        <div class="row justify-content-center">
+        <div class="row justify-content-center gy-3">
           <% cards.forEach(card => { %>
             <div class="col-md-6 col-lg-4">
               <div class="display-card">
                 <img src="<%= card.imageUrl %>" alt="Image" class="display-image">
                 <div class="display-body">
-                  <div class="display-title"><%= card.title %></div>
+                  <div class="display-title bold"><%= card.title %></div>
                   <div class="display-subtitle"><%= card.subtitle %></div>
                   <div class="display-meta">Added by: <%= card.addedBy %></div>
                   <div class="display-meta">Added on: <%= card.addedOn %></div>

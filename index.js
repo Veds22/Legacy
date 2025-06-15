@@ -4,23 +4,28 @@ import pg from "pg";
 
 const app = express();
 const port = 3000;
-const db =new pg.Client({
+const db = new pg.Client({
   user: "postgres",
   host: "localhost",
   database: "Legacy",
-  password: "yash",
+  password: "admin",
   port: 5432,
 });
 db.connect();
+
+// Middleware
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use('/static', express.static('public/static'));
 app.set('view engine', 'ejs');
 
+// ============= Static Routes =============
 app.get("/", (req, res) => {
   res.render("home.ejs");
 });
 
+// ============= Authentication Routes =============
 app.get("/login", (req, res) => {
   res.render("login.ejs");
 });
@@ -28,161 +33,6 @@ app.get("/login", (req, res) => {
 app.get("/register", (req, res) => {
   res.render("register.ejs");
 });
-// Schema for Vaults and image table 
-// each user will have multiple vaults and each vault will have multiple images 
-// user 1--n vaults 1--n images 
-// CREATE TABLE vaults (
-//   id SERIAL PRIMARY KEY,
-//   user_id INTEGER NOT NULL,
-//   name VARCHAR(100) NOT NULL,
-//   description TEXT,
-//   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-//   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-// );
-
-// CREATE TABLE images (
-//   id SERIAL PRIMARY KEY,
-//   vault_id INTEGER NOT NULL,
-//   image_url TEXT NOT NULL,
-//   description TEXT,
-//   uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-//   FOREIGN KEY (vault_id) REFERENCES vaults(id) ON DELETE CASCADE
-// );
-
-
-
-
-  // TESTED WITH DUMMY DATA
-  // Retreive vaults of a user and displays it
-  // Add logic to retrieve data from db and parse it to vaults.ejs
- app.get("/vaults", async (req, res) => {
-  try {
-    const userId = 1 ;
-
-    const result = await db.query(
-      `
-      SELECT 
-        id AS _id, 
-        name, 
-        description, 
-        image_url AS "imageUrl" 
-      FROM vaults
-      WHERE user_id = $1
-      `,
-      [userId]
-    );
-    console.log(result.rows);
-
-    res.render("vaults.ejs", { vaults: result.rows });
-  } catch (err) {
-    console.error("Error fetching vaults:", err.message);
-    res.status(500).send("Error fetching vaults from database.");
-  }
-});
-
-//   res.render('vaults.ejs', { vaults: [{
-//     _id: '1',
-//     name: 'yash',
-//     description: "Topper",
-//     imageUrl: "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg"
-//   },
-//   {
-//     _id: '2',
-//     name: 'yash',
-//     description: "Rajaji",
-//     imageUrl: "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg"
-//   },
-//   {
-//     _id: '3',
-//     name: "yash",
-//     description: "Interdimensional Conqueror",
-//     imageUrl: "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg"
-//   },
-//   {
-//     _id: '4',
-//     name: 'yash',
-//     description: "Team Leader",
-//     imageUrl: "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg"
-//   }]
-//  });
-
-
-
-
-
-  // TESTED with Dummy Data
-  // add logic to retreive data from db for images and parse it to vault.ejs
-  app.get('/vaults/:id', async (req, res) => {
-  const vaultId = req.params.id;
-
-  try {
-    const result = await db.query(`
-  SELECT 
-    images.image_url AS "imageUrl",
-    images.description AS subtitle,
-    users.email AS "addedBy",
-    TO_CHAR(images.uploaded_at, 'Month DD, YYYY') AS "addedOn"
-  FROM images
-  JOIN vaults ON images.vault_id = vaults.id
-  JOIN users ON vaults.user_id = users.id
-  WHERE images.vault_id = $1
-  ORDER BY images.uploaded_at DESC
-`, [vaultId]);
-
-    res.render('vault.ejs', { cards: result.rows });
-  } catch (err) {
-    console.error('Error fetching images for vault:', err.message);
-    res.status(500).send('Error loading vault images');
-  }
-});
-
-  // const cards = [
-  //   {
-  //     imageUrl: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg',
-  //     title: 'Sunset View',
-  //     subtitle: 'Beautiful sunset by the beach.',
-  //     addedBy: 'Alice Smith',
-  //     addedOn: 'June 1, 2025'
-  //   },
-  //   {
-  //     imageUrl: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg',
-  //     title: 'Mountain Peaks',
-  //     subtitle: 'Snowy mountains during sunrise.',
-  //     addedBy: 'Bob Stone',
-  //     addedOn: 'June 3, 2025'
-  //   },
-  //   {
-  //     imageUrl: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg',
-  //     title: 'City Lights',
-  //     subtitle: 'Night skyline glowing.',
-  //     addedBy: 'Carla West',
-  //     addedOn: 'June 5, 2025'
-  //   },
-  //   {
-  //     imageUrl: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg',
-  //     title: 'Forest Trail',
-  //     subtitle: 'A walk through the woods.',
-  //     addedBy: 'David King',
-  //     addedOn: 'June 7, 2025'
-  //   },
-  //   {
-  //     imageUrl: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg',
-  //     title: 'Ocean Horizon',
-  //     subtitle: 'Endless waves and breeze.',
-  //     addedBy: 'Ella Rae',
-  //     addedOn: 'June 9, 2025'
-  //   },
-  //   {
-  //     imageUrl: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg',
-  //     title: 'Golden Fields',
-  //     subtitle: 'Sunshine over farmland.',
-  //     addedBy: 'Frank Lane',
-  //     addedOn: 'June 11, 2025'
-  //   }
-  // ]
-
-  // res.render('vault.ejs', { cards })
-
 
 app.post("/register", async (req, res) => {
   const email = req.body.username;
@@ -206,11 +56,9 @@ app.post("/register", async (req, res) => {
   } catch (err) {
     console.log(err);
   }
-
 });
 
 app.post("/login", async (req, res) => {
-
   const email = req.body.username;
   const password = req.body.password;
 
@@ -235,12 +83,120 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.delete('/vaults/:id', (req, res) => {
-  // In a real application, you would delete the vault from the database
-  // Added by ai by itself to be implemented later
+// ============= Vault Routes =============
+app.get("/vaults", async (req, res) => {
+  try {
+    const userId = 1;
 
-  res.status(200).send('Vault deleted successfully');
+    const result = await db.query(
+      `
+      SELECT 
+        id AS _id, 
+        name, 
+        description, 
+        image_url AS "imageUrl" 
+      FROM vaults
+      WHERE user_id = $1
+      `,
+      [userId]
+    );
+    console.log(result.rows);
+
+    res.render("vaults.ejs", { vaults: result.rows });
+  } catch (err) {
+    console.error("Error fetching vaults:", err.message);
+    res.status(500).send("Error fetching vaults from database.");
+  }
 });
+
+app.get('/vaults/create', (req, res) => {
+  res.render('create.ejs');
+});
+
+app.post('/vaults/create', async (req, res) => {
+  try {
+    console.log('Request Body:', req.body);
+    const { name, description, visibility } = req.body;
+    
+    if (!name || !visibility) {
+      return res.status(400).send('Name and visibility are required');
+    }
+
+    const result = await db.query(
+      "INSERT INTO vaults (user_id, name, description) VALUES ($1, $2, $3) RETURNING id",
+      [1, name, description]
+    );
+
+    res.redirect('/vaults');
+  } catch (error) {
+    console.error('Error processing form:', error);
+    res.status(500).send('Error processing form');
+  }
+});
+
+app.get('/vaults/:id', async (req, res) => {
+  const vaultId = req.params.id;
+
+  try {
+    const result = await db.query(`
+      SELECT 
+        images.image_url AS "imageUrl",
+        images.description AS subtitle,
+        users.name AS "addedBy",
+        TO_CHAR(images.uploaded_at, 'Month DD, YYYY') AS "addedOn"
+      FROM images
+      JOIN vaults ON images.vault_id = vaults.id
+      JOIN users ON vaults.user_id = users.id
+      WHERE images.vault_id = $1
+      ORDER BY images.uploaded_at DESC
+    `, [vaultId]);
+
+    res.render('vault.ejs', { cards: result.rows, vaultId });
+  } catch (err) {
+    console.error('Error fetching images for vault:', err.message);
+    res.status(500).send('Error loading vault images');
+  }
+});
+
+app.get("/vaults/:id/upload", (req, res) => {
+  res.render('upload.ejs');
+});
+
+app.post('/vaults/:id/upload', async(req, res) => {
+  return null
+})
+
+app.delete('/vaults/:id', async (req, res) => {
+  try {
+    const result = await db.query("DELETE FROM vaults WHERE id = $1", [req.params.id]);
+    res.status(200).send('Vault deleted successfully');
+  } catch (error) {
+    console.error('Error deleting vault:', error);
+    res.status(500).send('Error deleting vault');
+  }
+});
+
+// ============= Database Schema =============
+// Schema for Vaults and image table 
+// each user will have multiple vaults and each vault will have multiple images 
+// user 1--n vaults 1--n images 
+// CREATE TABLE vaults (
+//   id SERIAL PRIMARY KEY,
+//   user_id INTEGER NOT NULL,
+//   name VARCHAR(100) NOT NULL,
+//   description TEXT,
+//   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+// );
+
+// CREATE TABLE images (
+//   id SERIAL PRIMARY KEY,
+//   vault_id INTEGER NOT NULL,
+//   image_url TEXT NOT NULL,
+//   description TEXT,
+//   uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//   FOREIGN KEY (vault_id) REFERENCES vaults(id) ON DELETE CASCADE
+// );
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
