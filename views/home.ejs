@@ -1,110 +1,101 @@
 <%- include('partials/header') %>
-  <style>
-    body {
-      background-color: #f3f3f3;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    .login-container {
-      max-width: 900px;
-      margin: 50px auto;
-      background: white;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-wrap: wrap;
-    }
-
-    .form-section {
-      padding: 60px 40px;
-      flex: 1;
-      min-width: 300px;
-    }
-
-    .form-section h2 {
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    .form-section p {
-      color: #666;
-      margin-bottom: 30px;
-    }
-
-    .form-check-label {
-      font-size: 0.9rem;
-    }
-
-    .illustration-section {
-      background: linear-gradient(to right, #7f5af0, #a78bfa);
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 300px;
-    }
-
-    .illustration-section img {
-      max-width: 90%;
-      height: auto;
-    }
-
-    .form-control {
-      border-radius: 10px;
-      padding: 10px 15px;
-    }
-
-    .btn-primary {
-      background-color: #7f5af0;
-      border: none;
-      border-radius: 10px;
-      padding: 10px 25px;
-      font-weight: 600;
-    }
-
-    .btn-primary:hover {
-      background-color: #683cd2;
-    }
-
-    .signup-link {
-      font-size: 0.9rem;
-      margin-top: 20px;
-    }
-  </style>
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Legacy – Family Vault</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="home.css" />
 </head>
 <body>
-<div class="login-container">
-  <div class="form-section">
-    <h2>Holla, Welcome Back</h2>
-    <p>Hey, welcome back to your special place</p>
-    <form method="POST" action="/login">
-      <div class="mb-3">
-        <input type="email" class="form-control" name="username" placeholder="Email Address" />
+
+
+<nav class="navbar navbar-expand-lg navbar-light  shadow-sm px-4 py-2">
+  <a class="navbar-brand fw-bold text-orange" href="#">Legacy</a>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+      <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+      <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
+      <li class="nav-item"><a class="btn btn-orange text-white ms-2" href="#">Sign Up</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+<header class="hero-section text-white d-flex align-items-center text-center">
+  <div class="container">
+    <h1 class="display-4 fw-bold">Preserve Your Family's Legacy</h1>
+    <p class="lead">A warm, secure place to hold and share timeless memories.</p>
+    <a href="#" class="btn btn-light me-2">Create Vault</a>
+    <a href="#" class="btn btn-outline-light">Learn More</a>
+  </div>
+</header>
+
+
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6 mb-4 mb-md-0">
+        <img src="img.webp" class="img-fluid rounded" alt="Family Memory" />
       </div>
-      <div class="mb-3">
-        <input type="password" class="form-control" name="password" placeholder="Password" />
+      <div class="col-md-6">
+        <h2 class="text-orange">What is Legacy?</h2>
+        <p class="fs-5">Legacy is a digital vault for families to store photos, videos, letters, and moments that matter. Invite family members, protect memories, and cherish history together.</p>
       </div>
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" checked />
-          <label class="form-check-label">Remember me</label>
+    </div>
+  </div>
+</section>
+
+
+<section class="py-5">
+  <div class="container text-center">
+    <h3 class="mb-4 text-orange">Explore Your Vaults</h3>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card-sm">
+          <img src="image.png" class="card-img-top" alt="Vault 1">
+          <div class="card-body">
+            <h5 class="card-title">Grandma's Vault</h5>
+            <p class="card-text">124 Memories · 6 Members</p>
+          </div>
         </div>
-        <a href="#" style="font-size: 0.9rem;">Forgot Password?</a>
       </div>
-      <button type="submit" class="btn btn-primary w-100">Sign In</button>
-    </form>
-    <p class="signup-link text-center mt-3">
-      Don't have an account? <a href="#">Sign Up</a>
-    </p>
+      <div class="col-md-4">
+        <div class="card-sm">
+          <img src="reunion.png" class="card-img-top" alt="Vault 2">
+          <div class="card-body">
+            <h5 class="card-title">Reunion 2020</h5>
+            <p class="card-text">75 Memories · 4 Members</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card-sm">
+          <img src="resized_couple_image.png" class="card-img-top" alt="Vault 3">
+          <div class="card-body">
+            <h5 class="card-title">Our Love Story</h5>
+            <p class="card-text">52 Memories · 2 Members</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  
+</section>
 
-  <div class="illustration-section">
-    <img src="/static/images/login.png" alt="Login Illustration" />
-  </div>
-</div>
 
+<footer class="bg-white text-center py-3 border-top">
+  <p class="mb-0 text-muted">© 2025 Legacy. All rights reserved.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 
