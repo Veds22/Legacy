@@ -8,7 +8,7 @@ const db = new pg.Client({
   user: "postgres",
   host: "localhost",
   database: "Legacy",
-  password: "admin",
+  password: "yash",
   port: 5432,
 });
 db.connect();
@@ -110,29 +110,16 @@ app.get("/vaults", async (req, res) => {
 });
 
 app.get('/vaults/create', (req, res) => {
+  // add logic to create and save vault by user
   res.render('create.ejs');
 });
 
 app.post('/vaults/create', async (req, res) => {
-  try {
-    console.log('Request Body:', req.body);
-    const { name, description, visibility } = req.body;
+
+  console.log('Request Body:', req.body);
+    const { name, description} = req.body;
     
-    if (!name || !visibility) {
-      return res.status(400).send('Name and visibility are required');
-    }
-
-    const result = await db.query(
-      "INSERT INTO vaults (user_id, name, description) VALUES ($1, $2, $3) RETURNING id",
-      [1, name, description]
-    );
-
-    res.redirect('/vaults');
-  } catch (error) {
-    console.error('Error processing form:', error);
-    res.status(500).send('Error processing form');
-  }
-});
+  });
 
 app.get('/vaults/:id', async (req, res) => {
   const vaultId = req.params.id;
@@ -163,7 +150,8 @@ app.get("/vaults/:id/upload", (req, res) => {
 });
 
 app.post('/vaults/:id/upload', async(req, res) => {
-  return null
+  const {description, fileType, fileInput} = req.body
+  // add logic to save a image to backend database
 })
 
 app.delete('/vaults/:id', async (req, res) => {
@@ -197,6 +185,8 @@ app.delete('/vaults/:id', async (req, res) => {
 //   uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 //   FOREIGN KEY (vault_id) REFERENCES vaults(id) ON DELETE CASCADE
 // );
+
+// ADD column for Full Name of user
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

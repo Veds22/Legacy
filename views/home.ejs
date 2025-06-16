@@ -1,21 +1,20 @@
 <%- include('partials/header') %>
 
-
 <header class="hero-section text-white d-flex align-items-center text-center">
   <div class="container">
     <h1 class="display-4 fw-bold">Preserve Your Family's Legacy</h1>
     <p class="lead">A warm, secure place to hold and share timeless memories.</p>
-    <a href="#" class="btn btn-light me-2">Create Vault</a>
-    <a href="#" class="btn btn-outline-light">Learn More</a>
+    <a href="/vaults/create" class="btn btn-light me-2">Create Vault</a>
+    <a href="#about" class="btn btn-outline-light">Learn More</a>
   </div>
 </header>
 
 
-<section class="py-5 bg-light">
+<section class="py-5 bg-light" id="about">
   <div class="container">
     <div class="row align-items-center">
       <div class="col-md-6 mb-4 mb-md-0">
-        <img src="img.webp" class="img-fluid rounded" alt="Family Memory" />
+        <img src="/static/images/img.webp" class="img-fluid rounded" alt="Family Memory" />
       </div>
       <div class="col-md-6">
         <h2 class="text-orange">What is Legacy?</h2>
@@ -32,7 +31,7 @@
     <div class="row g-4">
       <div class="col-md-4">
         <div class="card-sm">
-          <img src="image.png" class="card-img-top" alt="Vault 1">
+          <img src="/static/images/image.png" class="card-img-top" alt="Vault 1">
           <div class="card-body">
             <h5 class="card-title">Grandma's Vault</h5>
             <p class="card-text">124 Memories · 6 Members</p>
@@ -41,15 +40,7 @@
       </div>
       <div class="col-md-4">
         <div class="card-sm">
-          <img src="reunion.png" class="card-img-top" alt="Vault 2">
-          <div class="card-body">
-            <h5 class="card-title">Reunion 2020</h5>
-            <p class="card-text">75 Memories · 4 Members</p>
-          </div>
-        </div>
-      <div class="col-md-4">
-        <div class="card-sm">
-          <img src="reunion.png" class="card-img-top" alt="Vault 2">
+          <img src="/static/images/reunion.png" class="card-img-top" alt="Vault 2">
           <div class="card-body">
             <h5 class="card-title">Reunion 2020</h5>
             <p class="card-text">75 Memories · 4 Members</p>
@@ -58,21 +49,13 @@
       </div>
       <div class="col-md-4">
         <div class="card-sm">
-          <img src="resized_couple_image.png" class="card-img-top" alt="Vault 3">
-          <div class="card-body">
-            <h5 class="card-title">Our Love Story</h5>
-            <p class="card-text">52 Memories · 2 Members</p>
-          </div>
-      <div class="col-md-4">
-        <div class="card-sm">
-          <img src="resized_couple_image.png" class="card-img-top" alt="Vault 3">
+          <img src="/static/images/resized_couple_image.png" class="card-img-top" alt="Vault 3">
           <div class="card-body">
             <h5 class="card-title">Our Love Story</h5>
             <p class="card-text">52 Memories · 2 Members</p>
           </div>
         </div>
       </div>
-    </div>
     </div>
   </div>
 </section>
@@ -84,14 +67,5 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </section>
-
-
-<footer class="bg-white text-center py-3 border-top">
-  <p class="mb-0 text-muted">© 2025 Legacy. All rights reserved.</p>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-<%- include('partials/footer') %>

@@ -1,172 +1,161 @@
 <%- include('partials/header') %>
+<div class="container my-5">
+  <div class="row justify-content-center align-items-stretch">
+    <!-- Form Card -->
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <form action="/vault/123/upload" method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label for="description" class="form-label fw-semibold">Description (optional)</label>
+              <textarea class="form-control" id="description" name="description" rows="2" placeholder="Enter description..."></textarea>
+            </div>
 
-<ddiv class="container my-5">
-    <div class="row justify-content-center align-items-stretch">
-      <!-- Form Card -->
-      <div class="col-md-4">
-        <div class="card shadow-sm h-100">
-          <div class="card-body">
-            <form action="/vault/${:id}/upload" method="POST" enctype="multipart/form-data">
-              <!-- Description -->
-              <div class="mb-3">
-                <label for="description" class="form-label fw-semibold">Description (optional)</label>
-                <textarea class="form-control" id="description" name="description" rows="2" placeholder="Enter description..."></textarea>
+            <div class="mb-3">
+              <label for="fileType" class="form-label fw-semibold">File Type</label>
+              <select class="form-select" id="fileType" name="fileType" required>
+                <option selected disabled>Select file type</option>
+                <option value="image">Image</option>
+                <option value="audio">Audio</option>
+                <option value="pdf">PDF</option>
+                <option value="doc">Document</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <!-- Dropzone in form -->
+            <div class="position-relative card shadow-sm w-100 d-flex align-items-center justify-content-center p-4 mb-3">
+              <div class="drop-zone w-100" id="dropZone">
+                <span>Drag & Drop File Here or Click to Select</span>
+                <input type="file" name="upload" id="fileInput" class="d-none" required>
               </div>
-  
-              <!-- File Type -->
-              <div class="mb-3">
-                <label for="fileType" class="form-label fw-semibold">File Type</label>
-                <select class="form-select" id="fileType" name="fileType" required>
-                  <option selected disabled>Select file type</option>
-                  <option value="image">Image</option>
-                  <option value="audio">Audio</option>
-                  <option value="pdf">PDF</option>
-                  <option value="doc">Document</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-  
-              <!-- Upload Button -->
-              <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-purple fw-bold">Upload</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-  
-      <!-- Drag & Drop Box + Preview -->
-      <div class="col-md-4 d-flex align-items-center justify-content-center">
-        <div class="position-relative card shadow-sm w-100 h-100 d-flex align-items-center justify-content-center p-4">
-          <div class="drop-zone mb-3 w-100" id="dropZone">
-            <span>Drag & Drop File Here or Click to Select</span>
-            <input type="file" name="upload" id="fileInput" class="d-none" required>
-          </div>
-          <div class="preview-container" id="previewContainer"></div>
-        </div>
-        <div class="text-end mb-2">
-          <button id="backButton" class="btn btn-purple fw-bold" style="display: none;">
-            <i class="fas fa-arrow-left"></i>
-          </button>
+              <div class="preview-container" id="previewContainer"></div>
+            </div>
+
+            <div class="text-end mb-3">
+              <button id="backButton" class="btn btn-purple fw-bold" style="display: none;">
+                <i class="fas fa-arrow-left"></i>
+              </button>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-purple fw-bold">Upload</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
   </div>
-  <script>
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileInput');
-    const previewContainer = document.getElementById('previewContainer');
-  
-    dropZone.addEventListener('click', () => fileInput.click());
-  
-    dropZone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropZone.classList.add('dragover');
-    });
-  
-    dropZone.addEventListener('dragleave', () => {
-      dropZone.classList.remove('dragover');
-    });
-  
-    dropZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropZone.classList.remove('dragover');
-      const file = e.dataTransfer.files[0];
-      fileInput.files = e.dataTransfer.files;
-      showPreview(file);
-    });
-  
-    fileInput.addEventListener('change', () => {
-      const file = fileInput.files[0];
-      showPreview(file);
-    });
-  
-    function showPreview(file) {
-      dropZone.style.display = 'none';
-      document.getElementById('backButton').style.display = 'inline-block';
-      dropZone.style.display = 'none';
-      previewContainer.innerHTML = '';
-      const type = file.type;
-  
-      if (type.startsWith('image/')) {
-        const img = document.createElement('img');
-        img.src = URL.createObjectURL(file);
-        previewContainer.appendChild(img);
-      } else if (type.startsWith('audio/')) {
-        const audio = document.createElement('audio');
-        audio.controls = true;
-        audio.src = URL.createObjectURL(file);
-        previewContainer.appendChild(audio);
-      } else if (type === 'application/pdf') {
-        const iframe = document.createElement('iframe');
-        iframe.src = URL.createObjectURL(file);
-        iframe.width = '100%';
-        iframe.height = '300';
-        iframe.style.border = '1px solid #ccc';
-        previewContainer.appendChild(iframe);
-      } else if (
-        type === 'application/msword' ||
-        type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-      ) {
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(file);
-        link.textContent = `Preview: ${file.name}`;
-        link.target = '_blank';
-        previewContainer.appendChild(link);
-      } else {
-        previewContainer.textContent = `Selected file: ${file.name}`;
-      }
-    }
-    document.getElementById('backButton').addEventListener('click', () => {
-      previewContainer.innerHTML = '';
-      dropZone.style.display = 'block';
-      document.getElementById('backButton').style.display = 'none';
-      fileInput.value = '';
-    });
-  </script>
-  
-  
-  <style>
-    .drop-zone {
-      border: 2px dashed #7f5af0;
-      border-radius: 15px;
-      padding: 6rem;
-      text-align: center;
-      color: #7f5af0;
-      cursor: pointer;
-      background-color: #f9f6ff;
-      transition: background 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .drop-zone.dragover {
-      background-color: #e9e2ff;
-    }
-    .preview-container {
-      margin-top: 1rem;
-      text-align: center;
-    }
-    .preview-container img, .preview-container audio {
-      max-width: 100%;
-      max-height: 250px;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
-    .btn-purple {
-      background-color: #7f5af0;
-      color: white;
-      border: none;
-      transition: all 0.3s ease;
-    }
-    .btn-purple:hover {
-      background-color: #6a4acf;
-    }
-    .btn-purple:active {
-      background-color: #563bd8;
-    }
-    .full-height {
-      height: 80%;
-    }
+</div>
+<style>
+  .drop-zone {
+    border: 2px dashed #7f5af0;
+    border-radius: 15px;
+    padding: 6rem;
+    text-align: center;
+    color: #7f5af0;
+    cursor: pointer;
+    background-color: #f9f6ff;
+    transition: background 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .drop-zone.dragover {
+    background-color: #e9e2ff;
+  }
+  .preview-container {
+    margin-top: 1rem;
+    text-align: center;
+  }
+  .preview-container img,
+  .preview-container audio {
+    max-width: 100%;
+    max-height: 250px;
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+  .btn-purple {
+    background-color: #7f5af0;
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+  }
+  .btn-purple:hover {
+    background-color: #6a4acf;
+  }
+  .btn-purple:active {
+    background-color: #563bd8;
+  }
 </style>
+<script>
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('fileInput');
+  const previewContainer = document.getElementById('previewContainer');
+  const backButton = document.getElementById('backButton');
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('dragover');
+  });
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('dragover');
+  });
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    fileInput.files = e.dataTransfer.files;
+    showPreview(file);
+  });
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files[0];
+    showPreview(file);
+  });
+
+  function showPreview(file) {
+    dropZone.style.display = 'none';
+    backButton.style.display = 'inline-block';
+    previewContainer.innerHTML = '';
+    const type = file.type;
+
+    if (type.startsWith('image/')) {
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(file);
+      previewContainer.appendChild(img);
+    } else if (type.startsWith('audio/')) {
+      const audio = document.createElement('audio');
+      audio.controls = true;
+      audio.src = URL.createObjectURL(file);
+      previewContainer.appendChild(audio);
+    } else if (type === 'application/pdf') {
+      const iframe = document.createElement('iframe');
+      iframe.src = URL.createObjectURL(file);
+      iframe.width = '100%';
+      iframe.height = '300';
+      iframe.style.border = '1px solid #ccc';
+      previewContainer.appendChild(iframe);
+    } else if (
+      type === 'application/msword' ||
+      type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ) {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(file);
+      link.textContent = `Preview: ${file.name}`;
+      link.target = '_blank';
+      previewContainer.appendChild(link);
+    } else {
+      previewContainer.textContent = `Selected file: ${file.name}`;
+    }
+  }
+
+  backButton.addEventListener('click', () => {
+    previewContainer.innerHTML = '';
+    dropZone.style.display = 'block';
+    backButton.style.display = 'none';
+    fileInput.value = '';
+  });
+</script>
+
 <%- include('partials/footer') %>
