@@ -5,7 +5,7 @@
     <div class="col-md-6 col-lg-5">
       <div class="card shadow-sm h-100">
         <div class="card-body">
-          <form action="/vault/123/upload" method="POST" enctype="multipart/form-data">
+          <form action="/vaults/123/upload" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
               <label for="description" class="form-label fw-semibold">Description (optional)</label>
               <textarea class="form-control" id="description" name="description" rows="2" placeholder="Enter description..."></textarea>
@@ -27,7 +27,7 @@
             <div class="position-relative card shadow-sm w-100 d-flex align-items-center justify-content-center p-4 mb-3">
               <div class="drop-zone w-100" id="dropZone">
                 <span>Drag & Drop File Here or Click to Select</span>
-                <input type="file" name="upload" id="fileInput" class="d-none" required>
+                <input type="file" name="fileInput" id="fileInput" class="d-none" required>
               </div>
               <div class="preview-container" id="previewContainer"></div>
             </div>
