@@ -1,0 +1,64 @@
+:root {
+  --orange: #F57C00;
+  --light-orange: #FFAB91;
+  --dark-brown: #5D4037;
+  --beige: #FFF8F0;
+  --text-dark: #2C2C2C;
+}
+
+
+body {
+  background-color: #E8ECEF;
+}
+
+.centered {
+    padding-top: 200px;
+    text-align: center;
+}
+
+.secret-text {
+  text-align: center;
+  font-size: 2rem;
+  color: #fff;
+  background-color: #000;
+}
+
+.text-orange {
+  color: var(--orange);
+}
+.btn-orange {
+  background-color: var(--orange);
+  border: none;
+}
+.btn-orange:hover {
+  background-color: #e26a00;
+}
+
+
+.hero-section {
+  background: url('hero.png') no-repeat center center;
+  background-size: cover ;
+  background-color: #eac5a0;
+  background-position: cente;
+  background-repeat: no-repeat;
+  height: 130vh;
+  padding-top: 60px;
+  width: 100%;
+}
+.hero-section h1,
+.hero-section p {
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+
+.card-title {
+  color: var(--dark-brown);
+  font-weight: bold;
+}
+.navbar {
+background-color: #e6edec;
+}
+.card-sm img{
+  border-radius: 40px;
+  
+}
