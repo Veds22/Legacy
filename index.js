@@ -51,10 +51,28 @@ app.get("/", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  res.render("login.ejs",{ isLoggedIn: false });
+  const token = req.cookies.token;
+  if (token) {
+    try {
+      jwt.verify(token, process.env.JWT_SECRET);
+      return res.redirect("/vaults");
+    } catch (err) {
+      res.clearCookie("token");
+    }
+  }
+  res.render("login.ejs", { isLoggedIn: false });
 });
 
 app.get("/register", (req, res) => {
+  const token = req.cookies.token;
+  if (token) {
+    try {
+      jwt.verify(token, process.env.JWT_SECRET);
+      return res.redirect("/vaults");
+    } catch (err) {
+      res.clearCookie("token");
+    }
+  }
   res.render("register.ejs", { isLoggedIn: false });
 });
 
@@ -108,8 +126,8 @@ app.get("/vaults", authenticateToken, async (req, res) => {
   }
 });
 
-app.get("/vaults/create", (req, res) => {
-  res.render("create.ejs",{ isLoggedIn: true});
+app.get("/vaults/create", authenticateToken, (req, res) => {
+  res.render("create.ejs", { isLoggedIn: true });
 });
 
 app.post("/vaults/create", authenticateToken, async (req, res) => {
@@ -129,7 +147,19 @@ app.post("/vaults/create", authenticateToken, async (req, res) => {
 
 app.get("/vaults/:id", authenticateToken, async (req, res) => {
   const vaultId = req.params.id;
+  const userId = req.user.userId;
+
   try {
+    // First verify user owns the vault
+    const vaultCheck = await db.query(
+      "SELECT id FROM vaults WHERE id = $1 AND user_id = $2",
+      [vaultId, userId]
+    );
+
+    if (vaultCheck.rows.length === 0) {
+      return res.status(403).send("You don't have permission to view this vault");
+    }
+
     const result = await db.query(
       `SELECT images.image_url AS "imageUrl",
               images.description AS subtitle,
@@ -142,7 +172,6 @@ app.get("/vaults/:id", authenticateToken, async (req, res) => {
        ORDER BY images.uploaded_at DESC`,
       [vaultId]
     );
-    console.log(result)
     res.render("vault.ejs", { cards: result.rows, vaultId, isLoggedIn: true });
   } catch (err) {
     console.error("Error fetching images:", err.message);
@@ -150,19 +179,47 @@ app.get("/vaults/:id", authenticateToken, async (req, res) => {
   }
 });
 
-app.get("/vaults/:id/upload", (req, res) => {
-  res.render("upload.ejs", { vaultId: req.params.id, isLoggedIn: true });
+app.get("/vaults/:id/upload", authenticateToken, async (req, res) => {
+  const vaultId = req.params.id;
+  const userId = req.user.userId;
+
+  try {
+    // Verify user owns the vault
+    const vaultCheck = await db.query(
+      "SELECT id FROM vaults WHERE id = $1 AND user_id = $2",
+      [vaultId, userId]
+    );
+
+    if (vaultCheck.rows.length === 0) {
+      return res.status(403).send("You don't have permission to upload to this vault");
+    }
+
+    res.render("upload.ejs", { vaultId, isLoggedIn: true });
+  } catch (err) {
+    console.error("Error checking vault:", err.message);
+    res.status(500).send("Error accessing vault");
+  }
 });
 
 app.post(
   "/vaults/:id/upload",
   authenticateToken,
-  upload.single("fileInput"), // name="fileInput" in your form
+  upload.single("fileInput"),
   async (req, res) => {
     const { description } = req.body;
     const vaultId = req.params.id;
-
+    const userId = req.user.userId;
     try {
+      // First verify the vault exists and belongs to the user
+      const vaultCheck = await db.query(
+        "SELECT id FROM vaults WHERE id = $1 AND user_id = $2",
+        [vaultId, userId]
+      );
+
+      if (vaultCheck.rows.length === 0) {
+        return res.status(403).send("Vault not found or you don't have permission");
+      }
+
       const imageUrl = req.file.path; // Cloudinary URL
       await db.query(
         `INSERT INTO images (vault_id, image_url, description) VALUES ($1, $2, $3)`,
@@ -184,6 +241,23 @@ app.delete("/vaults/:id", authenticateToken, async (req, res) => {
   } catch (error) {
     console.error("Error deleting vault:", error);
     res.status(500).send("Error deleting vault");
+  }
+});
+
+// Add delete route for images
+app.delete("/vaults/:vaultId/delete/:imageId", authenticateToken, async (req, res) => {
+  const { vaultId, imageId } = req.params;
+
+
+  try {
+    // TODO: Add logic to:
+    // 1. Verify user owns the vault
+    // 2. Delete image from cloudinary
+    // 3. Delete image record from database
+    // 4. Return success response
+  } catch (error) {
+    console.error("Error deleting image:", error);
+    res.status(500).send("Error deleting image");
   }
 });
 
