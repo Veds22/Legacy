@@ -36,15 +36,26 @@ function authenticateToken(req, res, next) {
 
 // Routes
 app.get("/", (req, res) => {
-  res.render("home.ejs");
+  const token = req.cookies.token;
+  let isLoggedIn = false;
+
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      isLoggedIn = true;
+    } catch (err) {
+      isLoggedIn = false;
+    }
+  }
+  res.render("home.ejs", { isLoggedIn });
 });
 
 app.get("/login", (req, res) => {
-  res.render("login.ejs");
+  res.render("login.ejs",{ isLoggedIn: false });
 });
 
 app.get("/register", (req, res) => {
-  res.render("register.ejs");
+  res.render("register.ejs", { isLoggedIn: false });
 });
 
 app.post("/register", async (req, res) => {
@@ -90,7 +101,7 @@ app.get("/vaults", authenticateToken, async (req, res) => {
       `SELECT id AS _id, name, description FROM vaults WHERE user_id = $1`,
       [userId]
     );
-    res.render("vaults.ejs", { vaults: result.rows });
+    res.render("vaults.ejs", { vaults: result.rows, isLoggedIn: true});
   } catch (err) {
     console.error("Error fetching vaults:", err.message);
     res.status(500).send("Error fetching vaults.");
@@ -98,7 +109,7 @@ app.get("/vaults", authenticateToken, async (req, res) => {
 });
 
 app.get("/vaults/create", (req, res) => {
-  res.render("create.ejs");
+  res.render("create.ejs",{ isLoggedIn: true});
 });
 
 app.post("/vaults/create", authenticateToken, async (req, res) => {
@@ -131,7 +142,8 @@ app.get("/vaults/:id", authenticateToken, async (req, res) => {
        ORDER BY images.uploaded_at DESC`,
       [vaultId]
     );
-    res.render("vault.ejs", { cards: result.rows, vaultId });
+    console.log(result)
+    res.render("vault.ejs", { cards: result.rows, vaultId, isLoggedIn: true });
   } catch (err) {
     console.error("Error fetching images:", err.message);
     res.status(500).send("Error loading vault images");
@@ -139,7 +151,7 @@ app.get("/vaults/:id", authenticateToken, async (req, res) => {
 });
 
 app.get("/vaults/:id/upload", (req, res) => {
-  res.render("upload.ejs", { vaultId: req.params.id });
+  res.render("upload.ejs", { vaultId: req.params.id, isLoggedIn: true });
 });
 
 app.post(
@@ -175,6 +187,11 @@ app.delete("/vaults/:id", authenticateToken, async (req, res) => {
   }
 });
 
+app.get("/logout", (req, res) => {
+  res.clearCookie("token");
+  res.redirect("/");
+});
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
@@ -203,4 +220,3 @@ app.listen(port, () => {
 // );
 
 // ADD column for Full Name of user
-
