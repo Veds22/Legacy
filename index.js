@@ -116,7 +116,14 @@ app.get("/vaults", authenticateToken, async (req, res) => {
   try {
     const userId = req.user.userId;
     const result = await db.query(
-      `SELECT id AS _id, name, description FROM vaults WHERE user_id = $1`,
+      `SELECT vaults.id AS _id, vaults.name, vaults.description, 
+       (SELECT images.image_url 
+        FROM images 
+        WHERE images.vault_id = vaults.id 
+        ORDER BY images.uploaded_at ASC 
+        LIMIT 1) as first_image
+       FROM vaults 
+       WHERE vaults.user_id = $1`,
       [userId]
     );
     res.render("vaults.ejs", { vaults: result.rows, isLoggedIn: true});
@@ -150,17 +157,20 @@ app.get("/vaults/:id", authenticateToken, async (req, res) => {
   const userId = req.user.userId;
 
   try {
-    // First verify user owns the vault
-    const vaultCheck = await db.query(
-      "SELECT id FROM vaults WHERE id = $1 AND user_id = $2",
+    // First get vault details
+    const vaultResult = await db.query(
+      "SELECT name, description FROM vaults WHERE id = $1 AND user_id = $2",
       [vaultId, userId]
     );
 
-    if (vaultCheck.rows.length === 0) {
+    if (vaultResult.rows.length === 0) {
       return res.status(403).send("You don't have permission to view this vault");
     }
 
-    const result = await db.query(
+    const vault = vaultResult.rows[0];
+
+    // Then get images if any
+    const imagesResult = await db.query(
       `SELECT images.image_url AS "imageUrl",
               images.description AS subtitle,
               users.username AS "addedBy",
@@ -172,10 +182,16 @@ app.get("/vaults/:id", authenticateToken, async (req, res) => {
        ORDER BY images.uploaded_at DESC`,
       [vaultId]
     );
-    res.render("vault.ejs", { cards: result.rows, vaultId, isLoggedIn: true });
+
+    res.render("vault.ejs", { 
+      cards: imagesResult.rows, 
+      vaultId, 
+      vault,
+      isLoggedIn: true 
+    });
   } catch (err) {
-    console.error("Error fetching images:", err.message);
-    res.status(500).send("Error loading vault images");
+    console.error("Error fetching vault:", err.message);
+    res.status(500).send("Error loading vault");
   }
 });
 
