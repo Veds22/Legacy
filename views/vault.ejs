@@ -79,6 +79,30 @@
 </div>
 
 <style>
+ .container-fluid {
+    
+    z-index: 1;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: sans-serif;
+  }
+  .container-fluid::before{
+    content: " ";
+    position: absolute;
+  top:50px ;
+    left: 0;
+    opacity: 0.6;
+   background: url('https://thumbs.dreamstime.com/b/happy-asian-family-taking-selfie-three-generation-sitting-grass-using-mobile-phone-outdoors-park-166580534.jpg');
+    background-size: cover ;
+z-index: -1;
+  
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 110vh;
+  padding-top: 60px;
+  width: 100%;
+  }
     .content-wrapper {
       background-color: white;
       border-radius: 20px;
