@@ -263,19 +263,43 @@ app.delete("/vaults/:id", authenticateToken, async (req, res) => {
 // Add delete route for images
 app.delete("/vaults/:vaultId/delete/:imageId", authenticateToken, async (req, res) => {
   const { vaultId, imageId } = req.params;
-
+  const userId = req.user.id; 
 
   try {
-    // TODO: Add logic to:
-    // 1. Verify user owns the vault
-    // 2. Delete image from cloudinary
-    // 3. Delete image record from database
-    // 4. Return success response
+   
+    const vaultResult = await pool.query(
+      "SELECT 1 FROM vaults WHERE id = $1 AND user_id = $2",
+      [vaultId, userId]
+    );
+
+    if (vaultResult.rowCount === 0) {
+      return res.status(403).json({ error: "Unauthorized or vault not found." });
+    }
+
+   
+    const imageResult = await pool.query(
+      "SELECT 1 FROM images WHERE id = $1 AND vault_id = $2",
+      [imageId, vaultId]
+    );
+
+    if (imageResult.rowCount === 0) {
+      return res.status(404).json({ error: "Image not found in this vault." });
+    }
+
+   
+    await pool.query(
+      "DELETE FROM images WHERE id = $1 AND vault_id = $2",
+      [imageId, vaultId]
+    );
+
+    res.status(200).json({ message: "Image deleted from database successfully." });
+
   } catch (error) {
     console.error("Error deleting image:", error);
     res.status(500).send("Error deleting image");
   }
 });
+
 
 app.get("/logout", (req, res) => {
   res.clearCookie("token");
