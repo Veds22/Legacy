@@ -306,6 +306,7 @@ app.delete("/vaults/:vaultId/:imageId", authenticateToken, async (req, res) => {
     );
 
     res.status(200).json({ message: "Image deleted from database successfully." });
+    res.redirect(`/vaults/${vaultId}`);
 
   } catch (error) {
     console.error("Error deleting image:", error);
