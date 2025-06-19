@@ -1,6 +1,6 @@
 <%- include('partials/header') %>
 
-  <div class="container py-4">
+  <div class="container-fluid py-4">
     <div class="row justify-content-center">
       <div class="col-md-8 col-lg-5">
         <div class="container" >
@@ -31,6 +31,36 @@
     </div>
   </div>
   <style>
+body{
+    overflow: hidden;
+  }
+    .container-fluid {
+    
+    z-index: 1;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: sans-serif;
+  }
+  .container-fluid::before{
+    content: " ";
+    position: absolute;
+  top:50px ;
+    left: 0;
+    opacity: 0.6;
+   background: url('https://thumbs.dreamstime.com/b/happy-asian-family-taking-selfie-three-generation-sitting-grass-using-mobile-phone-outdoors-park-166580534.jpg');
+    background-size: cover ;
+z-index: -1;
+  
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 110vh;
+  padding-top: 60px;
+  width: 100%;
+  }
+  .container{
+    margin: 50px auto;
+  }
     .display-card {
       max-width: 420px;
       border-radius: 20px;
