@@ -61,7 +61,7 @@
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <a href="/vaults/<%= vaultId %>/delete/<%= card.id %>" class="btn btn-danger">Delete</a>
+                    <button type="button" class="btn btn-danger" onclick="deleteImage('<%= vaultId %>', '<%= card.id %>')">Delete</button>
                   </div>
                 </div>
               </div>
@@ -214,3 +214,26 @@ z-index: -1;
 </style>
 
 <%- include('partials/footer') %>
+
+<script>
+function deleteImage(vaultId, imageId) {
+  fetch(`/vaults/${vaultId}/${imageId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'same-origin' // ✅ send cookies!
+  })  
+  .then(response => {
+    if (response.ok) {
+      window.location.href = `/vaults/${vaultId}`;
+    } else {
+      alert('Error deleting image');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Error deleting image');
+  });
+}
+</script>
