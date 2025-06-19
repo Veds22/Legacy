@@ -64,6 +64,30 @@
 </div>
 
 <style>
+.container {
+    
+    z-index: 1;
+   
+    padding: 0;
+    min-height: 10vh;
+    font-family: sans-serif;
+  }
+  .container::before{
+    content: " ";
+    position: absolute;
+  top:50px ;
+    left: 0;
+    opacity: 0.4;
+   background: url('https://media.istockphoto.com/id/1292573758/photo/happy-mother-with-father-carrying-their-daughter-on-shoulder-at-park.jpg?s=612x612&w=0&k=20&c=bYGSsldUJKnSTTqRY5NYB-KNY947Vy8VNrEiFu0JvLk=');
+    background-size: cover ;
+z-index: -1;
+  
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 110vh;
+  padding-top: 60px;
+  width: 100%;
+  }
   .drop-zone {
     border: 2px dashed #e36e08;
     border-radius: 15px;
