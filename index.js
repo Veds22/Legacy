@@ -162,7 +162,6 @@ app.get("/vaults/:id", authenticateToken, async (req, res) => {
       "SELECT name, description FROM vaults WHERE id = $1 AND user_id = $2",
       [vaultId, userId]
     );
-
     if (vaultResult.rows.length === 0) {
       return res.status(403).send("You don't have permission to view this vault");
     }
@@ -172,6 +171,7 @@ app.get("/vaults/:id", authenticateToken, async (req, res) => {
     // Then get images if any
     const imagesResult = await db.query(
       `SELECT images.image_url AS "imageUrl",
+              images.id AS "id",
               images.description AS subtitle,
               users.username AS "addedBy",
               TO_CHAR(images.uploaded_at, 'Month DD, YYYY') AS "addedOn"
@@ -242,7 +242,7 @@ app.post(
         [vaultId, imageUrl, description]
       );
 
-      res.redirect(`/vaults/${vaultId}`);
+
     } catch (err) {
       console.error("Image upload error:", err.message);
       res.status(500).send("Failed to upload image");
@@ -251,23 +251,36 @@ app.post(
 );
 
 app.delete("/vaults/:id", authenticateToken, async (req, res) => {
+  const vaultId = req.params.id;
+  const userId = req.user.userId;
+
   try {
-    await db.query("DELETE FROM vaults WHERE id = $1", [req.params.id]);
+    // Check if the vault belongs to the authenticated user
+    const result = await db.query(
+      "SELECT id FROM vaults WHERE id = $1 AND user_id = $2",
+      [vaultId, userId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(403).send("Unauthorized: You don't own this vault");
+    }
+
+    await db.query("DELETE FROM vaults WHERE id = $1", [vaultId]);
     res.status(200).send("Vault deleted successfully");
   } catch (error) {
     console.error("Error deleting vault:", error);
     res.status(500).send("Error deleting vault");
-  }
+  }
 });
 
 // Add delete route for images
-app.delete("/vaults/:vaultId/delete/:imageId", authenticateToken, async (req, res) => {
+app.delete("/vaults/:vaultId/:imageId", authenticateToken, async (req, res) => {
   const { vaultId, imageId } = req.params;
-  const userId = req.user.id; 
+  const userId = req.user.userId; 
 
   try {
    
-    const vaultResult = await pool.query(
+    const vaultResult = await db.query(
       "SELECT 1 FROM vaults WHERE id = $1 AND user_id = $2",
       [vaultId, userId]
     );
@@ -277,7 +290,7 @@ app.delete("/vaults/:vaultId/delete/:imageId", authenticateToken, async (req, re
     }
 
    
-    const imageResult = await pool.query(
+    const imageResult = await db.query(
       "SELECT 1 FROM images WHERE id = $1 AND vault_id = $2",
       [imageId, vaultId]
     );
@@ -287,7 +300,7 @@ app.delete("/vaults/:vaultId/delete/:imageId", authenticateToken, async (req, re
     }
 
    
-    await pool.query(
+    await db.query(
       "DELETE FROM images WHERE id = $1 AND vault_id = $2",
       [imageId, vaultId]
     );
