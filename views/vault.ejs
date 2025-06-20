@@ -226,7 +226,7 @@ function deleteImage(vaultId, imageId) {
   })  
   .then(response => {
     if (response.ok) {
-      window.location.href = `/vaults/${vaultId}`;
+      window.location.reload();
     } else {
       alert('Error deleting image');
     }

@@ -241,8 +241,7 @@ app.post(
         `INSERT INTO images (vault_id, image_url, description) VALUES ($1, $2, $3)`,
         [vaultId, imageUrl, description]
       );
-
-
+      res.redirect(`/vaults/${vaultId}`);
     } catch (err) {
       console.error("Image upload error:", err.message);
       res.status(500).send("Failed to upload image");
@@ -270,7 +269,7 @@ app.delete("/vaults/:id", authenticateToken, async (req, res) => {
   } catch (error) {
     console.error("Error deleting vault:", error);
     res.status(500).send("Error deleting vault");
-  }
+  }
 });
 
 // Add delete route for images
@@ -306,7 +305,6 @@ app.delete("/vaults/:vaultId/:imageId", authenticateToken, async (req, res) => {
     );
 
     res.status(200).json({ message: "Image deleted from database successfully." });
-    res.redirect(`/vaults/${vaultId}`);
 
   } catch (error) {
     console.error("Error deleting image:", error);
