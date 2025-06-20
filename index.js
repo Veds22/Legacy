@@ -318,6 +318,62 @@ app.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+app.get("/init-db", async (req, res) => {
+  try {
+    // Create users table (if it doesn't exist)
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username character varying(50),
+        email character varying(100),
+        password character varying(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log("Users table created successfully");
+
+    // Create vaults table
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS vaults (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL,
+        name VARCHAR(100) NOT NULL,
+        description TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    `);
+    console.log("Vaults table created successfully");
+
+    // Create images table
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS images (
+        id SERIAL PRIMARY KEY,
+        vault_id INTEGER NOT NULL,
+        image_url TEXT NOT NULL,
+        description TEXT,
+        uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (vault_id) REFERENCES vaults(id) ON DELETE CASCADE
+      )
+    `);
+    console.log("Images table created successfully");
+
+    res.status(200).json({
+      success: true,
+      message: "Database tables initialized successfully",
+      tables: ["users", "vaults", "images"]
+    });
+
+  } catch (error) {
+    console.error("Database initialization error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to initialize database tables",
+      error: error.message
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running on port No. ${port}`);
 });
